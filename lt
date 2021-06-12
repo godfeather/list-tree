@@ -1,0 +1,44 @@
+#!/usr/local/bin/python3.9
+# -*-coding=utf8-*-
+# 打印指定目录结构
+import os;
+import sys;
+def tree (dir, li=[]):
+    if (dir[-1] != "/"):
+        dir += '/';
+    if (os.path.exists(dir)) :
+        pass;
+    else: 
+        print('\033[031m路径不存在\033[0m');
+        return;
+    try : 
+        list= os.listdir(dir);
+    except PermissionError : 
+        print('\033[31m权限拒绝\033[0m');
+        return;
+    for f in list : 
+        f = dir + f;
+        indents = str(f).split('/');
+        for indent in li :
+            print('\t',end = '');
+        if (len(li) > 0): 
+            print('\033[32m└ \033[0m', end = '');
+        if (os.path.isdir(f)) :
+            r = str(f[ : -1]).rfind('/');
+            print(f[r + 1 : ]);
+            com_li=[];
+            for i in li :
+                com_li.append(i);
+            com_li.append(1);
+            try: 
+                tree(f, com_li);
+            except KeyboardInterrupt:
+                exit();
+                pass;
+        if (os.path.isfile(f)): 
+            r = str(f).rfind('/')
+            print(f[r + 1:]);
+for v in range(1, len(sys.argv)): 
+    tree(sys.argv[v]);
+if (len(sys.argv)) < 2:
+    tree('./');
